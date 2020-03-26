@@ -1,0 +1,5 @@
+CSS Selectors
+
+tag: body, p, div in css is the tagname - global
+id: unique name in css # - specific
+class: reusable in css . - general
