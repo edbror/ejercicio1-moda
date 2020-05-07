@@ -15,29 +15,29 @@ body{
 	height: 100%;
 	margin: 0 auto;
 	padding: 12px;
-	background: rgba(217,150,91,.3); /*Red, Green, Blue, Alpha*/
+
 }
 
 h1{
-	color: #3E608C; /*Hex color, Adobe Color*/
+	color: #fff; /*Hex color, Adobe Color*/
 	text-transform: uppercase;
 	font-size: 64px;
+	margin: 0;
+	padding: 0;
 }
 
 h2{
 	color: #91B7D9;
 	font-size: 24px;
+	margin: 0;
+	padding: 0;
 }
 
-p{
-	color: #3E608C;
-	font-size: 16px;
-}
+
 
 img{
 	width: 100%;
 	max-width: 100%;
-	border-radius: 50%;
 }
 
 .tagline{
@@ -45,11 +45,37 @@ img{
 }
 
 article{
-	width: 33%;
+	width: 28.8%;
+	margin: 12px;
+	padding: 12px;
 	display: inline-block;
+	background: rgba(255,255,255,.9); /*Red, Green, Blue, Alpha*/
+	vertical-align: top;
+
 }
 
+p{
+	color: #3E608C;
+	font-size: 16px;
+	text-align: justify;
+	margin: 12px;
+}
 
 section{
+	margin: 0 auto;
+}
 
+header, footer{
+	width: 100%;
+	margin: 0 auto;
+	padding: 12px;
+}
+
+header p, footer p{
+color: #fff;
+text-align: center;
+}
+
+.bolder{
+	font-size: 64px;
 }
