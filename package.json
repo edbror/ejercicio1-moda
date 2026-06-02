@@ -1,0 +1,11 @@
+{
+  "name": "drift-ambient-instrument",
+  "version": "1.0.0",
+  "description": "A generative ambient soundscape instrument synthesized live with the Web Audio API.",
+  "private": true,
+  "scripts": {
+    "test": "node test/smoke.js",
+    "start": "python3 -m http.server 8000"
+  },
+  "license": "MIT"
+}
