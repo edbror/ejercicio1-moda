@@ -18,6 +18,9 @@
       this.motes = [];
       this.macros = null;
       this.harmony = null;
+      this.aurora = 0;        // target auroral intensity from space weather
+      this.auroraLevel = 0;   // smoothed, what we actually draw
+      this.phase = 0;         // animation phase for the shimmering curtains
       this.dpr = Math.min(window.devicePixelRatio || 1, 2);
       this.running = false;
       this._resize();
@@ -43,6 +46,8 @@
 
     setMacros(m) { this.macros = m; }
     setHarmony(h) { this.harmony = h; }
+    // Target auroral intensity [0,1]; 0 turns the curtains off (e.g. unsynced).
+    setAurora(a) { this.aurora = U.clamp(a || 0, 0, 1); }
 
     // A note happened — drop a bloom. freq decides vertical position.
     bloom(note) {
@@ -102,8 +107,17 @@
       ctx.fillRect(0, 0, w, h);
       ctx.globalAlpha = 1;
 
-      // Drifting motes — speed scales with motion.
+      // Ease the auroral intensity toward its target so storms swell in/out.
+      this.auroraLevel += (this.aurora - this.auroraLevel) * 0.02;
+      this.phase += 0.006 + m.motion * 0.01;
+
       ctx.globalCompositeOperation = 'lighter';
+
+      // Aurora curtains — drawn behind the motes/blooms, rising from the
+      // bottom, shimmering like the real thing when Bz turns south.
+      if (this.auroraLevel > 0.01) this._drawAurora(m);
+
+      // Drifting motes — speed scales with motion.
       const speed = 0.4 + m.motion * 2.2;
       for (const p of this.motes) {
         p.x += p.vx * speed * 0.01;
@@ -137,6 +151,40 @@
         ctx.fill();
       }
       ctx.globalCompositeOperation = 'source-over';
+    }
+
+    // Shimmering auroral curtains. Several overlapping vertical bands sway with
+    // layered sines; brightness and height scale with intensity. Colour runs
+    // from the classic oxygen green up into a high violet/magenta crown, the
+    // same ordering you see in a real strong display.
+    _drawAurora(m) {
+      const ctx = this.ctx;
+      const { w, h } = this;
+      const I = this.auroraLevel;
+      const bands = 5;
+      const baseHeight = h * (0.4 + 0.45 * I);
+      for (let b = 0; b < bands; b++) {
+        const t = b / (bands - 1);
+        // Each band drifts horizontally at its own rate.
+        const sway = Math.sin(this.phase * (0.6 + t) + b * 1.7) * w * 0.12;
+        const cx = w * (0.2 + 0.6 * t) + sway;
+        const bw = w * (0.18 + 0.10 * Math.sin(this.phase * 0.5 + b));
+        const top = h - baseHeight * (0.7 + 0.3 * Math.sin(this.phase + b * 2.1));
+        const hue = 135 + t * 145;           // green -> violet/magenta crown
+        const alpha = 0.05 + 0.16 * I * (0.6 + 0.4 * Math.sin(this.phase * 1.3 + b));
+        const grad = ctx.createLinearGradient(0, h, 0, top);
+        grad.addColorStop(0, `hsla(${hue}, 90%, 60%, 0)`);
+        grad.addColorStop(0.35, `hsla(${hue}, 90%, 62%, ${alpha})`);
+        grad.addColorStop(1, `hsla(${(hue + 30) % 360}, 95%, 72%, 0)`);
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.moveTo(cx - bw, h);
+        ctx.lineTo(cx - bw * 0.4, top);
+        ctx.lineTo(cx + bw * 0.4, top);
+        ctx.lineTo(cx + bw, h);
+        ctx.closePath();
+        ctx.fill();
+      }
     }
   }
 

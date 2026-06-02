@@ -125,7 +125,19 @@
     if (Number.isFinite(reading.protons)) {
       targets.spread = U.lerp(0.2, 0.9, norm(reading.protons, RANGE.protons)); // dense -> wider
     }
-    return { targets, colorBias };
+    // Aurora intensity [0,1]: the real thing brightens with *southward* Bz
+    // (magnetic reconnection energising the magnetosphere) and with the Kp
+    // storm level. Northward Bz contributes nothing. Used by the visuals to
+    // bloom green curtains exactly when the sky over the poles would.
+    let aurora = 0;
+    if (Number.isFinite(reading.bz)) {
+      const south = U.clamp(-reading.bz / Math.abs(RANGE.bz[0]), 0, 1); // 0..1 as Bz goes south
+      aurora = Math.max(aurora, south);
+    }
+    if (Number.isFinite(reading.kp)) {
+      aurora = Math.max(aurora, norm(reading.kp, RANGE.kp));
+    }
+    return { targets, colorBias, aurora };
   }
 
   // Decide whether a new reading represents a "substorm" relative to the last —

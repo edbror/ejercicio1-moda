@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Drift (2026) — Exhibition Handout</title>
+  <style>
+    /*
+     * Single-page exhibition handout for *Drift*.
+     * Screen: dark, centred. Print / "Save as PDF": clean A4, black on white.
+     * No dependencies; open in a browser and use Cmd/Ctrl-P.
+     */
+    :root { --ink:#14181f; --dim:#5b6472; --accent:#0a6e86; --line:#d8dde4; }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; }
+    body {
+      background: #1a1f27;
+      color: var(--ink);
+      font-family: Georgia, "Times New Roman", serif;
+      padding: 28px;
+    }
+    .sheet {
+      width: 210mm;
+      min-height: 297mm;
+      margin: 0 auto;
+      background: #fffdf8;
+      padding: 24mm 22mm;
+      box-shadow: 0 18px 60px rgba(0,0,0,0.5);
+    }
+    .eyebrow {
+      font-family: ui-sans-serif, system-ui, sans-serif;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      font-size: 10.5px;
+      color: var(--accent);
+      margin: 0 0 14px;
+    }
+    h1 {
+      font-size: 52px;
+      margin: 0 0 4px;
+      letter-spacing: 0.02em;
+      font-weight: 400;
+    }
+    h1 .mark { color: var(--accent); }
+    .subtitle {
+      font-family: ui-sans-serif, system-ui, sans-serif;
+      color: var(--dim);
+      font-size: 13px;
+      letter-spacing: 0.04em;
+      margin: 0 0 26px;
+      padding-bottom: 22px;
+      border-bottom: 1px solid var(--line);
+    }
+    .lede { font-size: 17px; line-height: 1.55; margin: 0 0 18px; }
+    p { font-size: 13.5px; line-height: 1.68; margin: 0 0 13px; text-align: justify; }
+    em { font-style: italic; }
+    .cols { column-count: 2; column-gap: 14mm; margin-top: 6px; }
+    h2 {
+      font-family: ui-sans-serif, system-ui, sans-serif;
+      font-size: 12px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin: 0 0 8px;
+      break-after: avoid;
+    }
+    .mapping {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: ui-sans-serif, system-ui, sans-serif;
+      font-size: 11px;
+      margin: 4px 0 18px;
+    }
+    .mapping th {
+      text-align: left;
+      color: var(--dim);
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-size: 9.5px;
+      border-bottom: 1.5px solid var(--ink);
+      padding: 4px 8px 5px 0;
+    }
+    .mapping td { padding: 5px 8px 5px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+    .mapping td:first-child { font-weight: 600; white-space: nowrap; }
+    .coda {
+      font-size: 16px;
+      text-align: center;
+      margin: 22px 0 18px;
+      color: var(--accent);
+      font-style: italic;
+    }
+    .colophon {
+      font-family: ui-sans-serif, system-ui, sans-serif;
+      font-size: 10px;
+      line-height: 1.6;
+      color: var(--dim);
+      border-top: 1px solid var(--line);
+      padding-top: 14px;
+    }
+    .colophon strong { color: var(--ink); }
+    .print-hint {
+      position: fixed; top: 14px; right: 16px;
+      font-family: ui-sans-serif, system-ui, sans-serif;
+      background: var(--accent); color: #fff;
+      padding: 9px 14px; border-radius: 8px; font-size: 12px;
+      text-decoration: none;
+    }
+    @media print {
+      body { background: #fff; padding: 0; }
+      .sheet { box-shadow: none; width: auto; min-height: auto; padding: 16mm 14mm; }
+      .print-hint { display: none; }
+      @page { size: A4; margin: 0; }
+    }
+  </style>
+</head>
+<body>
+  <a class="print-hint" href="javascript:window.print()">Save as PDF ⌘P</a>
+  <article class="sheet">
+    <p class="eyebrow">Sound Work · 2026</p>
+    <h1><span class="mark">◓</span> Drift</h1>
+    <p class="subtitle">
+      Generative sound instrument · live Web Audio synthesis · real-time
+      heliophysical telemetry · duration infinite · no recordings used
+    </p>
+
+    <p class="lede">
+      <em>Drift</em> asks what is left of authorship once the author admits they
+      are not in charge. Nothing here is recorded; every sound is synthesised
+      the instant you hear it and will never recur in that exact form. There is
+      no score, no loop, no end. It is not a recording of a process — it
+      <em>is</em> the process, ongoing, indifferent to whether anyone is
+      listening.
+    </p>
+
+    <div class="cols">
+      <p>
+        The interface offers you controls and invites you to shape the weather
+        of the sound. But the instrument does not obey. Each gesture is a
+        <em>wish</em>, not a command: the system blends your wish with its own
+        slow wandering and a drift that pulls everything back toward an
+        equilibrium you never set. A glowing marker on each control shows where
+        the value <em>actually</em> went — the gap between intention and result,
+        opening and closing, second by second. You are not the composer. You are
+        weather pressure. You lean on the system, and it leans back.
+      </p>
+      <p>
+        The work then performs its most radical refusal of human authority: it
+        hands the tonality of the music to the Sun. Synced, <em>Drift</em> tunes
+        itself to live solar-wind and geomagnetic data measured by spacecraft at
+        the <em>L1 Lagrange point</em>, 1.5 million kilometres sunward, where
+        Earth's gravity and the Sun's cancel into stillness. The data arrives an
+        hour old: you hear not the present, but a message already in transit.
+        When the magnetic field turns southward — the same event that lights the
+        aurora — the harmony darkens. A geomagnetic substorm does not influence
+        the music; it <em>re-keys</em> it, without consent. The composer is a
+        star that has never heard of music.
+      </p>
+    </div>
+
+    <h2>The sky, mapped to sound</h2>
+    <table class="mapping">
+      <thead>
+        <tr><th>Measurement</th><th>Source</th><th>Shapes</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Solar-wind speed</td><td>DSCOVR plasma</td><td>restlessness &amp; rate of key change</td></tr>
+        <tr><td>Magnetic field Bz</td><td>DSCOVR mag</td><td>brightness &amp; mode colour — southward darkens</td></tr>
+        <tr><td>Kp storm index</td><td>planetary K</td><td>density of the texture</td></tr>
+        <tr><td>Total field Bt</td><td>DSCOVR mag</td><td>sense of space, intimate to cavernous</td></tr>
+        <tr><td>Proton temperature</td><td>DSCOVR plasma</td><td>register / pitch centre</td></tr>
+        <tr><td>Proton density</td><td>DSCOVR plasma</td><td>width of the voicing</td></tr>
+      </tbody>
+    </table>
+
+    <p class="coda">You may nudge it. You will never hold it. That is the work.</p>
+
+    <p class="colophon">
+      <strong>Drift</strong> (2026). Generative sound; live Web Audio synthesis;
+      real-time heliophysical telemetry. Audio is synthesised live on the
+      visitor's device — no recordings are used, including the reverberant space,
+      which is generated from noise. Space-weather data courtesy of the
+      <strong>NOAA Space Weather Prediction Center</strong> (DSCOVR / ACE),
+      retrieved live at the L1 Lagrange point; when the feeds are unavailable the
+      instrument continues to generate its own weather. The piece is most fully
+      itself when left alone. &nbsp;·&nbsp; Headphones recommended.
+    </p>
+  </article>
+</body>
+</html>

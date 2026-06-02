@@ -78,6 +78,7 @@ require('../js/util.js');
 require('../js/harmony.js');
 require('../js/drift.js');
 require('../js/cosmos.js');
+require('../js/snapshot.js');
 require('../js/audio.js');
 require('../js/scheduler.js');
 const A = global.Ambient;
@@ -167,6 +168,22 @@ function assert(cond, msg) {
   assert(C.isSubstorm({ bz: 2 }, { bz: -6 }), 'sharp southward Bz turn flags a substorm');
   assert(!C.isSubstorm({ kp: 4, bz: 1 }, { kp: 4, bz: 0 }), 'quiet change is not a substorm');
   assert(!C.isSubstorm(null, { kp: 9 }), 'first reading is never a substorm');
+
+  // aurora intensity: bright when Bz is south / Kp high, dark when north & calm
+  assert(south.aurora > 0.7, `southward storm lights the aurora (${south.aurora.toFixed(2)})`);
+  assert(north.aurora < 0.2, `northward calm leaves it dark (${north.aurora.toFixed(2)})`);
+  const auroraInRange = [0, 0.5, 1].every(() => south.aurora >= 0 && south.aurora <= 1 && north.aurora >= 0 && north.aurora <= 1);
+  assert(auroraInRange, 'aurora intensity stays within [0,1]');
+
+  // snapshot mood + sky text helpers (pure, no DOM)
+  const S = A.Snapshot;
+  const brightMood = S.moodWords({ brightness: 0.9, density: 0.7, space: 0.8, motion: 0.7 });
+  const darkMood = S.moodWords({ brightness: 0.1, density: 0.1, space: 0.2, motion: 0.1 });
+  assert(/luminous/.test(brightMood), `bright weather reads luminous ("${brightMood}")`);
+  assert(/shadowed/.test(darkMood), `dark weather reads shadowed ("${darkMood}")`);
+  assert(S.skyLine({ speed: 487.3, bz: -3.2, kp: 4 }) === 'wind 487 km/s   Bz -3.2 nT   Kp 4.0',
+    'skyLine formats telemetry');
+  assert(S.skyLine(null) === null, 'skyLine tolerates no reading');
 
   // harmony colour bias actually skews mode selection bright vs dark
   function darkShare(bias) {

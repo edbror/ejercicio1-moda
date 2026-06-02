@@ -63,6 +63,7 @@
         this._flashGust();
       });
       document.getElementById('cosmos').addEventListener('click', () => this.toggleCosmos());
+      document.getElementById('share').addEventListener('click', () => this.snapshot());
 
       // About / statement overlay.
       document.getElementById('title').addEventListener('click', () => this.toggleAbout(true));
@@ -79,6 +80,7 @@
         else if (e.key.toLowerCase() === 'c') { this.toggleCosmos(); }
         else if (e.key === '?') { this.toggleAbout(); }
         else if (e.key === 'Escape') { this.toggleAbout(false); }
+        else if (e.key.toLowerCase() === 's') { this.snapshot(); }
       });
 
       // Seed the visuals with the starting weather even before play.
@@ -158,6 +160,22 @@
       el.classList.toggle('hidden', !show);
     }
 
+    // Capture a "now playing" still — the live field plus key, mood and sky.
+    snapshot() {
+      const shot = A.Snapshot.compose({
+        sourceCanvas: document.getElementById('stage'),
+        macros: this._values(),
+        keyText: `${this.harmony.noteName} ${this.harmony.modeName}`,
+        reading: this.cosmos.last,
+        synced: this.cosmosOn,
+      });
+      const stamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+      A.Snapshot.download(shot.dataURL, `drift-${stamp}.png`);
+      // brief flash on the button for feedback
+      const b = document.getElementById('share');
+      b.classList.remove('flash'); void b.offsetWidth; b.classList.add('flash');
+    }
+
     // ---- live space weather --------------------------------------------------
 
     toggleCosmos() {
@@ -172,6 +190,7 @@
         this.cosmos.stop();
         this.drift.setCosmicWeight(0);
         this.harmony.setColorBias(0);
+        this.visuals.setAurora(0);
         this._updateCosmosReadout('idle');
       }
     }
@@ -180,6 +199,8 @@
       // Map physics -> macro targets and harmonic colour.
       this.drift.setCosmicTargets(mapped.targets);
       if (mapped.colorBias != null) this.harmony.setColorBias(mapped.colorBias);
+      // Bloom the aurora exactly when the real sky would.
+      this.visuals.setAurora(mapped.aurora);
       // A substorm (Kp jump / sharp southward Bz) shakes the instrument and
       // forces an immediate key change — the sky literally re-keys the music.
       if (info && info.substorm) {

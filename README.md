@@ -102,6 +102,15 @@ so the texture pulses and thins organically instead of ticking.
 A living canvas that only listens. Every scheduled note drops an expanding
 "bloom" placed by pitch (vertical) and pan (horizontal); drifting motes and a
 slowly shifting background gradient track the weather even in near-silence.
+When synced to the cosmos, **auroral curtains** rise from the bottom of the
+canvas and brighten exactly as the real aurora would — with *southward* Bz and
+rising Kp — so a geomagnetic storm you can hear is also one you can see.
+
+### Snapshots (`snapshot.js`)
+Press **Share** (or `S`) to save a square "now playing" PNG: the live field,
+the current key, a mood line distilled from the macros, and — if synced — the
+live sky telemetry and a UTC timestamp. A portrait of one exact, unrepeatable
+moment of the piece.
 
 ## Controls
 
@@ -115,7 +124,11 @@ slowly shifting background gradient track the weather even in near-silence.
 | Space | intimate ↔ cavernous |
 | Warmth | bells ↔ pads |
 
-Keyboard: **Space** = play/pause · **G** = gust.
+Plus **Gust** (shove the weather), **Cosmos** (sync to the sky), and **Share**
+(save a now-playing image).
+
+Keyboard: **Space** play/pause · **G** gust · **C** cosmos · **S** save ·
+**?** about.
 
 ## Running
 

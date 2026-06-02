@@ -11,6 +11,13 @@ built and run).
 | [`PRESS-RELEASE.md`](PRESS-RELEASE.md) | Press release with quick facts |
 | [`CATALOGUE-ESSAY.md`](CATALOGUE-ESSAY.md) | ~1,000-word critical essay, *“The Wind That Was Already Blowing”* |
 | [`SYNOPSIS.md`](SYNOPSIS.md) | The full philosophical synopsis |
+| [`handout.html`](handout.html) | Single-page exhibition handout — open in a browser and **Save as PDF** (⌘P). Dark on screen, clean A4 in print. |
+
+## Diagram
+
+A catalogue-spread diagram — *the sky → the instrument → the reading* — lives in
+FigJam: **[Drift — Sky to Sound to Meaning](https://www.figma.com/board/wgpEjDdxJZpBLdZd7yQlOc)**
+(open in Figma to edit fonts or move shapes).
 
 ## The work in one breath
 
