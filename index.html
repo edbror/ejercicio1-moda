@@ -1,65 +1,126 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<title>Disclosure - Favorites</title>
-	<link rel="stylesheet" href="style.css">
-	<link href="https://fonts.googleapis.com/css?family=Poppins:400,700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>Drift — a generative ambient instrument</title>
+  <meta name="description" content="A self-evolving ambient soundscape synthesized live in the browser. You can nudge it, never fully control it." />
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-	<div id="home">
-		<header>
-			<h1>Disclosure - Favorites</h1>
-			<p class="tagline">Get to know my favorite Disclosure Albums and listen them on Spotify.</p>
-		</header>
-		<section id="favorites">
-			<article id="albums">
-				<a href="https://open.spotify.com/album/1ZFGRj11NnZHos8DUbbpF1" target="_blank">
-					<img src="settle.jpg" alt="Settle Album Cover">
-				</a>
-				<h2>Settle</h2>
-				<p>ettle is the debut studio album by English electronic music duo <b>Disclosure</b>.It was released on 31 May 2013 by PMR Records and Island Records, Mercury Prize Winners and worldwide recognition followed.</p>
-			</article>
-			<article id="albums">
-				<a href="https://open.spotify.com/album/08ipn1MH7xqgoqhUbtvCTy" target="_blank">
-					<img src="carcal.jpg" alt="Carcal">
-				</a>
-				<h2>Carcal</h2>
-				<p>On the follow-up to their massive 2013 hit Settle, the brothers Guy and Howard Lawrence have dialed down the BPMs significantly and turned toward <i>slow-burning</i>, R&B-inspired grooves.</p>
-			</article>
-			<article id="albums">
-				<a href="https://open.spotify.com/album/6BcSwoWKyFgB4CoVIYLxac" target="_blank">
-					<img src="ecstasy.jpg" alt="Ecstasy EP">
-				</a>
-				<h2>Ecstasy EP</h2>
-				<p>Ecstasy is the first collection of music released by brothers Howard and Guy Lawrence since 2016’s. Earlier this month, the brothers teamed up with Khalid for his track <b>“Know Your Worth.”</b></p>
-			</article>
-		</section>
-		<footer>
-			<p>DisclosureStore™ | Privacy Policy | Contact</p>
-		</footer>
-	</div>
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-161786286-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+  <!-- Full-bleed living canvas -->
+  <canvas id="stage"></canvas>
 
-  gtag('config', 'UA-161786286-1');
-</script>
-<!-- Hotjar Tracking Code for hopeful-einstein-ee8e4b.netlify.com -->
-<script>
-    (function(h,o,t,j,a,r){
-        h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
-        h._hjSettings={hjid:1743043,hjsv:6};
-        a=o.getElementsByTagName('head')[0];
-        r=o.createElement('script');r.async=1;
-        r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
-        a.appendChild(r);
-    })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
-</script>
+  <!-- Title + harmony readout -->
+  <header class="topbar">
+    <button id="title" class="title" title="About this work">
+      <span class="mark">◓</span> Drift
+    </button>
+    <div class="readout-group">
+      <div class="readout">
+        <span class="readout-label">key</span>
+        <span id="harmony">—</span>
+      </div>
+      <div id="cosmos-readout" class="readout cosmos hidden">
+        <span class="cosmos-status"></span>
+        <span class="cosmos-data"></span>
+      </div>
+    </div>
+  </header>
+
+  <!-- First-run explainer, hidden once you press play -->
+  <section id="intro" class="intro">
+    <h1>Drift</h1>
+    <p>
+      A generative ambient instrument. Every sound is synthesized live —
+      no samples, no recordings. Underneath runs a slowly evolving
+      <em>weather system</em>: it breathes and modulates on its own.
+    </p>
+    <p>
+      The sliders below set your <em>wishes</em>. The glowing marker on each
+      shows where the system actually drifted — you can bias the weather,
+      but you can't command it. Press <kbd>Gust</kbd> (or <kbd>G</kbd>) to
+      shove it somewhere new.
+    </p>
+    <p>
+      Or hand the controls to the sky: <kbd>Cosmos</kbd> syncs the instrument to
+      <em>live space weather</em> — real solar-wind speed, magnetic field and
+      geomagnetic storm data measured a million miles out at the L1 point. The
+      Sun chooses the key; a geomagnetic substorm re-keys the music.
+    </p>
+    <p class="fineprint">headphones recommended · <kbd>space</kbd> play · <kbd>g</kbd> gust · <kbd>c</kbd> cosmos · <kbd>s</kbd> save · <kbd>?</kbd> about</p>
+  </section>
+
+  <!-- About / statement overlay -->
+  <section id="about" class="about hidden" role="dialog" aria-modal="true" aria-label="About Drift">
+    <div class="about-inner">
+      <button id="about-close" class="about-close" aria-label="Close">×</button>
+      <p class="about-eyebrow">Drift · 2026</p>
+      <h2>generative sound instrument<br />live synthesis · real-time heliophysical telemetry</h2>
+      <p>
+        <em>Drift</em> asks what is left of authorship once the author admits
+        they are not in charge. Nothing here is recorded. Every grain of
+        sound — each bell, each pad, even the space the sounds appear to inhabit —
+        is synthesised the instant you hear it and will never recur in that exact
+        form. There is no score, no loop, no end. It is not a recording of a
+        process; it <em>is</em> the process, ongoing, indifferent to whether
+        anyone is listening.
+      </p>
+      <p>
+        The sliders register a <em>wish</em>, not a command. The system blends
+        your wish with its own slow wandering and a drift that pulls everything
+        back toward an equilibrium you never set. The glowing marker on each
+        control shows where the value <em>actually</em> went — the gap between
+        intention and result, opening and closing, second by second. You are not
+        the composer. You are weather pressure. You lean on the system, and it
+        leans back.
+      </p>
+      <p>
+        Press <em>Cosmos</em> and the work hands its deepest decision — the key —
+        to the Sun. It tunes itself to live solar-wind and geomagnetic data
+        measured by spacecraft at the <em>L1 Lagrange point</em>, 1.5 million km
+        sunward, where Earth's gravity and the Sun's cancel into stillness. The
+        data arrives an hour old: you hear not the present but a message already
+        in transit. When the magnetic field turns southward — the same event
+        that lights the aurora — the harmony darkens. A geomagnetic substorm
+        does not influence the music; it <em>re-keys</em> it, without consent.
+        The composer is a star that has never heard of music.
+      </p>
+      <p>
+        Against an aesthetics of mastery, <em>Drift</em> proposes one of
+        <em>tending</em>: not the artist as origin, but as one pressure among
+        many in a field that exceeds them. It is most fully itself when left
+        alone — drifting on a wind that was blowing long before there was anyone
+        to name it.
+      </p>
+      <p class="about-coda">You may nudge it. You will never hold it. That is the work.</p>
+      <p class="about-credit">
+        Audio synthesised live with the Web Audio API; no recordings are used.
+        Space-weather telemetry courtesy of the NOAA Space Weather Prediction
+        Center (DSCOVR / ACE), retrieved live at L1.
+      </p>
+    </div>
+  </section>
+
+  <!-- Control dock -->
+  <footer class="dock">
+    <div class="transport">
+      <button id="play" class="btn primary">Play</button>
+      <button id="gust" class="btn">Gust</button>
+      <button id="cosmos" class="btn" title="Sync to live space weather">Cosmos</button>
+      <button id="share" class="btn" title="Save a now-playing image">Share</button>
+    </div>
+    <div id="controls" class="controls"></div>
+  </footer>
+
+  <script src="js/util.js"></script>
+  <script src="js/harmony.js"></script>
+  <script src="js/drift.js"></script>
+  <script src="js/cosmos.js"></script>
+  <script src="js/snapshot.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/scheduler.js"></script>
+  <script src="js/visuals.js"></script>
+  <script src="js/app.js"></script>
 </body>
 </html>
-
-
