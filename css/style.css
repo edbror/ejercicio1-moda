@@ -70,6 +70,34 @@ html, body {
 .readout-label { opacity: 0.6; margin-right: 8px; text-transform: uppercase; font-size: 11px; }
 #harmony { color: var(--ink); font-variant-numeric: tabular-nums; }
 
+.readout-group { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; pointer-events: none; }
+
+/* live space-weather telemetry pill */
+.readout.cosmos {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  border-color: rgba(127, 211, 230, 0.35);
+  background: rgba(127, 211, 230, 0.10);
+  font-variant-numeric: tabular-nums;
+  transition: opacity 0.4s;
+}
+.readout.cosmos.hidden { opacity: 0; }
+.cosmos-status { color: var(--accent); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; }
+.cosmos-status::before {
+  content: '';
+  display: inline-block;
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  margin-right: 7px;
+  vertical-align: middle;
+  box-shadow: 0 0 8px 1px var(--accent);
+  animation: pulse 2.4s ease-in-out infinite;
+}
+@keyframes pulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+.cosmos-data { color: var(--ink); }
+
 /* ---- intro card ---- */
 .intro {
   position: fixed;
@@ -156,6 +184,12 @@ kbd {
   0% { background: rgba(230, 176, 127, 0.45); transform: scale(1.04); }
   100% { background: var(--panel); transform: scale(1); }
 }
+.btn.active {
+  border-color: rgba(127, 211, 230, 0.6);
+  background: rgba(127, 211, 230, 0.22);
+  color: #d7f6ff;
+  box-shadow: 0 0 14px 0 rgba(127, 211, 230, 0.4);
+}
 
 /* slider grid */
 .controls {
@@ -217,7 +251,12 @@ input[type="range"]::-moz-range-thumb {
   border-radius: 2px;
   box-shadow: 0 0 8px 1px var(--accent);
   pointer-events: none;
-  transition: opacity 0.3s;
+  transition: opacity 0.3s, left 0.6s ease, background 0.4s, box-shadow 0.4s;
+}
+/* marker driven by live space weather glows warm */
+.actual.cosmic {
+  background: var(--accent-warm);
+  box-shadow: 0 0 10px 2px var(--accent-warm);
 }
 
 /* shift the canvas mood once you're playing */

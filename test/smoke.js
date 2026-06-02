@@ -77,9 +77,12 @@ global.performance = { now: () => 0 };
 require('../js/util.js');
 require('../js/harmony.js');
 require('../js/drift.js');
+require('../js/cosmos.js');
 require('../js/audio.js');
 require('../js/scheduler.js');
 const A = global.Ambient;
+
+function approx(a, b, eps = 1e-9) { return Math.abs(a - b) <= eps; }
 
 let failures = 0;
 function assert(cond, msg) {
@@ -114,6 +117,73 @@ function assert(cond, msg) {
   let gustOk = true;
   for (const k in afterGust) if (afterGust[k] < 0 || afterGust[k] > 1) gustOk = false;
   assert(gustOk, 'post-gust macros stay within [0,1]');
+
+  // cosmic target pulls a macro when weight is on, and is released cleanly
+  const d3 = new A.DriftSystem();
+  d3.setTarget('density', 0.0);          // user wants silence
+  d3.setCosmicTargets({ density: 1.0 }); // the sky wants a storm
+  d3.setCosmicWeight(1.0);               // fully synced
+  let cs = 0;
+  for (let i = 0; i < 600; i++) cs += d3.update(0.05).density;
+  assert(cs / 600 > 0.6, `cosmic target pulls macro toward it (mean ${(cs / 600).toFixed(2)})`);
+  d3.setCosmicWeight(0);                 // release back to the user's wish
+  let cs2 = 0;
+  for (let i = 0; i < 600; i++) cs2 += d3.update(0.05).density;
+  assert(cs2 / 600 < 0.4, `releasing cosmos returns to user target (mean ${(cs2 / 600).toFixed(2)})`);
+
+  // --- cosmos parse + map layer (pure, no network) ---
+  const C = A.Cosmos;
+  const plasma = [['time_tag', 'density', 'speed', 'temperature'],
+                  ['2026-06-02 05:00', '4.2', '380', '90000'],
+                  ['2026-06-02 05:01', '5.1', '620', '']];
+  // blank/missing cells should be skipped, scanning back for finite values
+  assert(approx(C.parsePlasma(plasma).speed, 620), 'parsePlasma reads newest finite speed');
+  assert(approx(C.parsePlasma(plasma).temp, 90000), 'parsePlasma skips blank temp back to finite');
+
+  const mag = [['time_tag', 'bx_gsm', 'by_gsm', 'bz_gsm', 'bt'],
+               ['2026-06-02 05:00', '1.0', '2.0', '-6.5', '7.1']];
+  assert(approx(C.parseMag(mag).bz, -6.5), 'parseMag reads bz_gsm');
+  assert(approx(C.parseMag(mag).bt, 7.1), 'parseMag reads bt');
+
+  const kp = [{ time_tag: '2026-06-02 04:00', kp_index: 3 },
+              { time_tag: '2026-06-02 05:00', kp_index: 5 }];
+  assert(approx(C.parseKp(kp).kp, 5), 'parseKp reads newest kp_index');
+
+  // southward Bz -> dark bias + lower brightness; northward -> opposite
+  const south = C.mapToTargets({ bz: -10, speed: 650, kp: 6, bt: 15, temp: 4e5, protons: 12 });
+  const north = C.mapToTargets({ bz: 10, speed: 320, kp: 1, bt: 4, temp: 2e4, protons: 1 });
+  assert(south.colorBias < 0 && north.colorBias > 0, 'Bz sign sets harmonic colour bias');
+  assert(south.targets.brightness < north.targets.brightness, 'southward Bz is darker than northward');
+  assert(south.targets.motion > north.targets.motion, 'faster wind raises motion');
+  assert(south.targets.density > north.targets.density, 'higher Kp raises density');
+  let mapInRange = true;
+  for (const t of [south, north]) for (const k in t.targets) {
+    if (t.targets[k] < 0 || t.targets[k] > 1) mapInRange = false;
+  }
+  assert(mapInRange, 'all cosmic targets land within [0,1]');
+
+  // substorm detection: Kp jump or sharp southward Bz turn
+  assert(C.isSubstorm({ kp: 3 }, { kp: 5 }), 'Kp jump flags a substorm');
+  assert(C.isSubstorm({ bz: 2 }, { bz: -6 }), 'sharp southward Bz turn flags a substorm');
+  assert(!C.isSubstorm({ kp: 4, bz: 1 }, { kp: 4, bz: 0 }), 'quiet change is not a substorm');
+  assert(!C.isSubstorm(null, { kp: 9 }), 'first reading is never a substorm');
+
+  // harmony colour bias actually skews mode selection bright vs dark
+  function darkShare(bias) {
+    const h = new A.Harmony();
+    h.setColorBias(bias);
+    const names = Object.keys(A.MODES);
+    let darkSteps = 0, total = 0;
+    let prev = names.indexOf(h.modeName);
+    for (let i = 0; i < 4000; i++) {
+      h.forceShift(0.5);
+      const idx = names.indexOf(h.modeName);
+      if (idx !== prev) { total++; if (idx > prev) darkSteps++; }
+      prev = idx;
+    }
+    return total ? darkSteps / total : 0.5;
+  }
+  assert(darkShare(-1) > darkShare(1), 'negative colour bias darkens modes more than positive');
 
   // --- harmony shifts and yields valid, audible frequencies ---
   const harmony = new A.Harmony();

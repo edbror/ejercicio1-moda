@@ -20,6 +20,8 @@
       this.name = name;
       this.value = opts.start ?? 0.5;      // current realised value
       this.userTarget = opts.start ?? 0.5; // what the human asked for
+      this.cosmicTarget = null;            // target imposed by live space weather
+      this.cosmicWeight = 0;               // 0 = ignore cosmos .. 1 = follow it
       this.wander = 0;                     // autonomous offset (random walk)
       this.inertia = opts.inertia ?? 0.35; // how fast it chases the target
       this.noise = opts.noise ?? 0.05;     // micro-jitter on the value itself
@@ -29,6 +31,7 @@
     }
 
     setTarget(t) { this.userTarget = U.clamp(t, 0, 1); }
+    setCosmic(t) { this.cosmicTarget = t == null ? null : U.clamp(t, 0, 1); }
 
     // `restlessness` (≈ the motion macro) scales the autonomy globally.
     update(dt, restlessness) {
@@ -38,8 +41,14 @@
                    + this.wanderNoise * live * U.randn() * Math.sqrt(dt);
       this.wander = U.clamp(this.wander, -this.wanderReach, this.wanderReach);
 
-      // 2. The effective target blends the human wish with the system's mood.
-      const target = U.clamp(this.userTarget + this.wander, 0, 1);
+      // 2. The effective target blends the human wish with the live cosmos
+      //    (if any), then adds the system's autonomous mood. Even fully synced
+      //    to space weather you still bias it, and it still wanders on its own.
+      let base = this.userTarget;
+      if (this.cosmicTarget != null && this.cosmicWeight > 0) {
+        base = U.lerp(this.userTarget, this.cosmicTarget, this.cosmicWeight);
+      }
+      const target = U.clamp(base + this.wander, 0, 1);
 
       // 3. Chase the target with inertia, plus a little jitter on the value.
       this.value += (target - this.value) * this.inertia * dt
@@ -68,6 +77,20 @@
       if (p) p.setTarget(t);
     }
 
+    // Push a batch of cosmic targets ({ macro -> [0,1] }). Missing macros keep
+    // whatever they had; pass null for a macro to release it.
+    setCosmicTargets(targets) {
+      for (const k in targets) {
+        if (this.params[k]) this.params[k].setCosmic(targets[k]);
+      }
+    }
+
+    // How strongly the live cosmos pulls every macro (0 = off, 1 = full sync).
+    setCosmicWeight(w) {
+      const c = U.clamp(w, 0, 1);
+      for (const k in this.params) this.params[k].cosmicWeight = c;
+    }
+
     // Inject a sudden gust: shove the wander of every param, so the whole
     // system lurches in a fresh direction. This is the "nudge" button.
     gust(strength = 1) {
@@ -94,10 +117,15 @@
       const out = {};
       for (const k in this.params) {
         const p = this.params[k];
+        let base = p.userTarget;
+        if (p.cosmicTarget != null && p.cosmicWeight > 0) {
+          base = U.lerp(p.userTarget, p.cosmicTarget, p.cosmicWeight);
+        }
         out[k] = {
           value: p.value,
-          target: U.clamp(p.userTarget + p.wander, 0, 1),
+          target: U.clamp(base + p.wander, 0, 1),
           user: p.userTarget,
+          cosmic: p.cosmicTarget,
         };
       }
       return out;

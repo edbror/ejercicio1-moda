@@ -14,9 +14,15 @@
   <!-- Title + harmony readout -->
   <header class="topbar">
     <div class="title"><span class="mark">◓</span> Drift</div>
-    <div class="readout">
-      <span class="readout-label">key</span>
-      <span id="harmony">—</span>
+    <div class="readout-group">
+      <div class="readout">
+        <span class="readout-label">key</span>
+        <span id="harmony">—</span>
+      </div>
+      <div id="cosmos-readout" class="readout cosmos hidden">
+        <span class="cosmos-status"></span>
+        <span class="cosmos-data"></span>
+      </div>
     </div>
   </header>
 
@@ -34,7 +40,13 @@
       but you can't command it. Press <kbd>Gust</kbd> (or <kbd>G</kbd>) to
       shove it somewhere new.
     </p>
-    <p class="fineprint">headphones recommended · <kbd>space</kbd> to play/pause</p>
+    <p>
+      Or hand the controls to the sky: <kbd>Cosmos</kbd> syncs the instrument to
+      <em>live space weather</em> — real solar-wind speed, magnetic field and
+      geomagnetic storm data measured a million miles out at the L1 point. The
+      Sun chooses the key; a geomagnetic substorm re-keys the music.
+    </p>
+    <p class="fineprint">headphones recommended · <kbd>space</kbd> play · <kbd>g</kbd> gust · <kbd>c</kbd> cosmos</p>
   </section>
 
   <!-- Control dock -->
@@ -42,6 +54,7 @@
     <div class="transport">
       <button id="play" class="btn primary">Play</button>
       <button id="gust" class="btn">Gust</button>
+      <button id="cosmos" class="btn" title="Sync to live space weather">Cosmos</button>
     </div>
     <div id="controls" class="controls"></div>
   </footer>
@@ -49,6 +62,7 @@
   <script src="js/util.js"></script>
   <script src="js/harmony.js"></script>
   <script src="js/drift.js"></script>
+  <script src="js/cosmos.js"></script>
   <script src="js/audio.js"></script>
   <script src="js/scheduler.js"></script>
   <script src="js/visuals.js"></script>

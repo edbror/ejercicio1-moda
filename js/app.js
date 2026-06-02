@@ -36,6 +36,12 @@
       this.lastT = 0;
       this.macroApplyAccum = 0;
       this.controls = {};
+
+      // Live space-weather link.
+      this.cosmos = new A.Cosmos.CosmosFeed();
+      this.cosmosOn = false;
+      this.cosmos.onStatus = (s, err) => this._updateCosmosReadout(s, err);
+      this.cosmos.onData = (reading, mapped, info) => this._onCosmos(reading, mapped, info);
     }
 
     init() {
@@ -56,12 +62,14 @@
         this.drift.gust(1);
         this._flashGust();
       });
+      document.getElementById('cosmos').addEventListener('click', () => this.toggleCosmos());
 
-      // Keyboard: space toggles play, G gusts.
+      // Keyboard: space toggles play, G gusts, C toggles cosmos sync.
       window.addEventListener('keydown', (e) => {
         if (e.target && e.target.tagName === 'INPUT') return;
         if (e.code === 'Space') { e.preventDefault(); this.toggle(); }
         else if (e.key.toLowerCase() === 'g') { this.drift.gust(1); this._flashGust(); }
+        else if (e.key.toLowerCase() === 'c') { this.toggleCosmos(); }
       });
 
       // Seed the visuals with the starting weather even before play.
@@ -118,6 +126,8 @@
         // Tint the marker by how far the system has wandered from your wish.
         const gap = Math.abs(s.value - s.user);
         c.actual.style.opacity = String(0.5 + Math.min(0.5, gap * 2.5));
+        // When the cosmos is pulling this macro, light the marker differently.
+        c.actual.classList.toggle('cosmic', this.cosmosOn && s.cosmic != null);
       }
     }
 
@@ -131,6 +141,66 @@
       b.classList.remove('flash');
       void b.offsetWidth; // reflow to restart the animation
       b.classList.add('flash');
+    }
+
+    // ---- live space weather --------------------------------------------------
+
+    toggleCosmos() {
+      this.cosmosOn = !this.cosmosOn;
+      const btn = document.getElementById('cosmos');
+      btn.classList.toggle('active', this.cosmosOn);
+      if (this.cosmosOn) {
+        // Ease the pull in so it doesn't yank the sliders' markers.
+        this.drift.setCosmicWeight(0.8);
+        this.cosmos.start();
+      } else {
+        this.cosmos.stop();
+        this.drift.setCosmicWeight(0);
+        this.harmony.setColorBias(0);
+        this._updateCosmosReadout('idle');
+      }
+    }
+
+    _onCosmos(reading, mapped, info) {
+      // Map physics -> macro targets and harmonic colour.
+      this.drift.setCosmicTargets(mapped.targets);
+      if (mapped.colorBias != null) this.harmony.setColorBias(mapped.colorBias);
+      // A substorm (Kp jump / sharp southward Bz) shakes the instrument and
+      // forces an immediate key change — the sky literally re-keys the music.
+      if (info && info.substorm) {
+        this.drift.gust(1.2);
+        this.harmony.forceShift(this.drift.params.motion.value);
+        this._flashGust();
+      }
+      this._renderCosmosData(reading);
+    }
+
+    _updateCosmosReadout(status, err) {
+      const el = document.getElementById('cosmos-readout');
+      if (!el) return;
+      const label = {
+        idle: '', loading: 'contacting L1…', live: 'live · solar wind',
+        error: 'feed unreachable',
+      }[status] || '';
+      el.classList.toggle('hidden', !this.cosmosOn && status === 'idle');
+      const stat = el.querySelector('.cosmos-status');
+      if (stat) stat.textContent = label;
+      if (status === 'error' && err) {
+        const data = el.querySelector('.cosmos-data');
+        if (data) data.textContent = 'could not reach NOAA SWPC';
+      }
+    }
+
+    _renderCosmosData(r) {
+      const el = document.getElementById('cosmos-readout');
+      if (!el) return;
+      const data = el.querySelector('.cosmos-data');
+      if (!data) return;
+      const bits = [];
+      if (Number.isFinite(r.speed)) bits.push(`wind ${Math.round(r.speed)} km/s`);
+      if (Number.isFinite(r.bz)) bits.push(`Bz ${r.bz >= 0 ? '+' : ''}${r.bz.toFixed(1)} nT`);
+      if (Number.isFinite(r.kp)) bits.push(`Kp ${r.kp.toFixed(1)}`);
+      data.textContent = bits.join(' · ');
     }
 
     async toggle() {

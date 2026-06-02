@@ -35,7 +35,12 @@
       this.mode = MODES[this.modeName];
       this.sinceChange = 0;
       this.changeListeners = [];
+      // -1 = pull toward dark modes (phrygian), +1 = toward bright (lydian).
+      // Left at 0 the mode walk is unbiased. The cosmos (IMF Bz) drives this.
+      this.colorBias = 0;
     }
+
+    setColorBias(b) { this.colorBias = U.clamp(b, -1, 1); }
 
     onChange(fn) { this.changeListeners.push(fn); }
     _emit() { this.changeListeners.forEach((fn) => fn(this)); }
@@ -56,6 +61,10 @@
       }
     }
 
+    // Force an immediate shift, ignoring the timer. Used by "gusts" — including
+    // a geomagnetic substorm shaking the instrument.
+    forceShift(motion = 0.5) { this._shift(motion); }
+
     _shift(motion) {
       this.sinceChange = 0;
       // Mostly move the root; occasionally swap the mode instead/as well.
@@ -70,9 +79,15 @@
         this.root = next;
       }
       if (Math.random() < 0.4 + 0.3 * motion) {
-        // Slide to a neighbouring mode (small change in colour).
+        // Slide to a neighbouring mode. MODE_NAMES runs bright->dark, so a
+        // negative step brightens and a positive step darkens. colorBias
+        // (driven by the IMF Bz) tilts which way we're more likely to go:
+        // southward field -> darker, northward -> brighter.
         const idx = MODE_NAMES.indexOf(this.modeName);
-        const step = U.pick([-1, 1, -1, 1, -2, 2]);
+        // bright weight up when bias>0 (want lower index, i.e. negative step).
+        const brightW = 1 + Math.max(0, this.colorBias) * 2.5;
+        const darkW   = 1 + Math.max(0, -this.colorBias) * 2.5;
+        const step = U.weightedPick([-1, -2, 1, 2], [brightW, brightW * 0.5, darkW, darkW * 0.5]);
         const ni = U.clamp(idx + step, 0, MODE_NAMES.length - 1);
         this.modeName = MODE_NAMES[ni];
         this.mode = MODES[this.modeName];
