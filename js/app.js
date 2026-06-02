@@ -64,12 +64,21 @@
       });
       document.getElementById('cosmos').addEventListener('click', () => this.toggleCosmos());
 
-      // Keyboard: space toggles play, G gusts, C toggles cosmos sync.
+      // About / statement overlay.
+      document.getElementById('title').addEventListener('click', () => this.toggleAbout(true));
+      document.getElementById('about-close').addEventListener('click', () => this.toggleAbout(false));
+      document.getElementById('about').addEventListener('click', (e) => {
+        if (e.target.id === 'about') this.toggleAbout(false); // click backdrop
+      });
+
+      // Keyboard: space toggles play, G gusts, C toggles cosmos sync, ? about.
       window.addEventListener('keydown', (e) => {
         if (e.target && e.target.tagName === 'INPUT') return;
         if (e.code === 'Space') { e.preventDefault(); this.toggle(); }
         else if (e.key.toLowerCase() === 'g') { this.drift.gust(1); this._flashGust(); }
         else if (e.key.toLowerCase() === 'c') { this.toggleCosmos(); }
+        else if (e.key === '?') { this.toggleAbout(); }
+        else if (e.key === 'Escape') { this.toggleAbout(false); }
       });
 
       // Seed the visuals with the starting weather even before play.
@@ -141,6 +150,12 @@
       b.classList.remove('flash');
       void b.offsetWidth; // reflow to restart the animation
       b.classList.add('flash');
+    }
+
+    toggleAbout(force) {
+      const el = document.getElementById('about');
+      const show = force === undefined ? el.classList.contains('hidden') : force;
+      el.classList.toggle('hidden', !show);
     }
 
     // ---- live space weather --------------------------------------------------

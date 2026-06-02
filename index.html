@@ -13,7 +13,9 @@
 
   <!-- Title + harmony readout -->
   <header class="topbar">
-    <div class="title"><span class="mark">◓</span> Drift</div>
+    <button id="title" class="title" title="About this work">
+      <span class="mark">◓</span> Drift
+    </button>
     <div class="readout-group">
       <div class="readout">
         <span class="readout-label">key</span>
@@ -46,7 +48,58 @@
       geomagnetic storm data measured a million miles out at the L1 point. The
       Sun chooses the key; a geomagnetic substorm re-keys the music.
     </p>
-    <p class="fineprint">headphones recommended · <kbd>space</kbd> play · <kbd>g</kbd> gust · <kbd>c</kbd> cosmos</p>
+    <p class="fineprint">headphones recommended · <kbd>space</kbd> play · <kbd>g</kbd> gust · <kbd>c</kbd> cosmos · <kbd>?</kbd> about</p>
+  </section>
+
+  <!-- About / statement overlay -->
+  <section id="about" class="about hidden" role="dialog" aria-modal="true" aria-label="About Drift">
+    <div class="about-inner">
+      <button id="about-close" class="about-close" aria-label="Close">×</button>
+      <p class="about-eyebrow">Drift · 2026</p>
+      <h2>generative sound instrument<br />live synthesis · real-time heliophysical telemetry</h2>
+      <p>
+        <em>Drift</em> asks what is left of authorship once the author admits
+        they are not in charge. Nothing here is recorded. Every grain of
+        sound — each bell, each pad, even the space the sounds appear to inhabit —
+        is synthesised the instant you hear it and will never recur in that exact
+        form. There is no score, no loop, no end. It is not a recording of a
+        process; it <em>is</em> the process, ongoing, indifferent to whether
+        anyone is listening.
+      </p>
+      <p>
+        The sliders register a <em>wish</em>, not a command. The system blends
+        your wish with its own slow wandering and a drift that pulls everything
+        back toward an equilibrium you never set. The glowing marker on each
+        control shows where the value <em>actually</em> went — the gap between
+        intention and result, opening and closing, second by second. You are not
+        the composer. You are weather pressure. You lean on the system, and it
+        leans back.
+      </p>
+      <p>
+        Press <em>Cosmos</em> and the work hands its deepest decision — the key —
+        to the Sun. It tunes itself to live solar-wind and geomagnetic data
+        measured by spacecraft at the <em>L1 Lagrange point</em>, 1.5 million km
+        sunward, where Earth's gravity and the Sun's cancel into stillness. The
+        data arrives an hour old: you hear not the present but a message already
+        in transit. When the magnetic field turns southward — the same event
+        that lights the aurora — the harmony darkens. A geomagnetic substorm
+        does not influence the music; it <em>re-keys</em> it, without consent.
+        The composer is a star that has never heard of music.
+      </p>
+      <p>
+        Against an aesthetics of mastery, <em>Drift</em> proposes one of
+        <em>tending</em>: not the artist as origin, but as one pressure among
+        many in a field that exceeds them. It is most fully itself when left
+        alone — drifting on a wind that was blowing long before there was anyone
+        to name it.
+      </p>
+      <p class="about-coda">You may nudge it. You will never hold it. That is the work.</p>
+      <p class="about-credit">
+        Audio synthesised live with the Web Audio API; no recordings are used.
+        Space-weather telemetry courtesy of the NOAA Space Weather Prediction
+        Center (DSCOVR / ACE), retrieved live at L1.
+      </p>
+    </div>
   </section>
 
   <!-- Control dock -->

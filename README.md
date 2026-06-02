@@ -11,6 +11,11 @@ You can **nudge** it, but you can never fully **command** it.
 > Open `index.html` in any modern browser and press **Play**. Headphones
 > recommended.
 
+> 📖 **Curatorial & critical texts** — artist statement, press release,
+> catalogue essay, wall labels and the full synopsis — live in
+> [`art/`](art/README.md). The piece's statement is also readable in-app via the
+> **Drift** title (or the `?` key).
+
 ## Sync to the sky 🛰️
 
 Press **Cosmos** (or the `C` key) and the instrument stops inventing its own

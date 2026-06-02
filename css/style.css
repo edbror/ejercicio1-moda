@@ -48,7 +48,17 @@ html, body {
   text-transform: uppercase;
   font-weight: 600;
   opacity: 0.9;
+  /* it's a <button> now — strip the chrome, keep it clickable */
+  pointer-events: auto;
+  background: none;
+  border: 0;
+  color: var(--ink);
+  font-family: inherit;
+  padding: 0;
+  cursor: pointer;
+  transition: opacity 0.2s;
 }
+.title:hover { opacity: 1; }
 .title .mark {
   color: var(--accent);
   margin-right: 6px;
@@ -131,6 +141,74 @@ html, body {
 .intro p { margin: 0 0 12px; line-height: 1.6; color: #cdd6e3; font-size: 15px; }
 .intro em { color: var(--accent); font-style: normal; }
 .fineprint { color: var(--dim) !important; font-size: 13px !important; }
+
+/* ---- about / statement overlay ---- */
+.about {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5vh 20px;
+  background: rgba(3, 5, 9, 0.78);
+  backdrop-filter: blur(10px);
+  transition: opacity 0.5s ease, visibility 0.5s;
+  overflow-y: auto;
+}
+.about.hidden { opacity: 0; visibility: hidden; }
+.about-inner {
+  position: relative;
+  width: min(640px, 92vw);
+  background: var(--panel-solid);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 40px 44px;
+  box-shadow: 0 30px 100px rgba(0,0,0,0.6);
+  margin: auto;
+}
+.about-close {
+  position: absolute;
+  top: 14px; right: 18px;
+  background: none; border: 0;
+  color: var(--dim);
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.about-close:hover { color: var(--ink); }
+.about-eyebrow {
+  color: var(--accent);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-size: 11px;
+  margin: 0 0 10px;
+}
+.about-inner h2 {
+  margin: 0 0 22px;
+  font-size: 19px;
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+}
+.about-inner p { margin: 0 0 15px; line-height: 1.72; color: #cdd6e3; font-size: 15px; }
+.about-inner em { color: var(--accent); font-style: normal; }
+.about-coda {
+  color: var(--accent-warm) !important;
+  font-size: 16px !important;
+  letter-spacing: 0.01em;
+  margin-top: 6px !important;
+}
+.about-credit {
+  color: var(--dim) !important;
+  font-size: 12.5px !important;
+  line-height: 1.6 !important;
+  border-top: 1px solid var(--line);
+  padding-top: 16px;
+  margin-top: 22px !important;
+}
 kbd {
   background: rgba(255,255,255,0.08);
   border: 1px solid var(--line);
